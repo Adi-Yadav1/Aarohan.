@@ -52,7 +52,8 @@
           "cameraPermissionText": "$(PRODUCT_NAME) needs access to your Camera to detect poses.",
           "enableMicrophonePermission": false
         }
-      ]
+      ],
+      "@react-native-community/datetimepicker"
     ],
     "experiments": {
       "typedRoutes": true,

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="512" height="512" role="img" aria-label="Chatbot robot head">
+  <!-- head circle -->
+  <circle cx="12" cy="12" r="9" fill="#ffffff"></circle>
+  <!-- eyes -->
+  <circle cx="9" cy="12" r="1.2" fill="#111"></circle>
+  <circle cx="15" cy="12" r="1.2" fill="#111"></circle>
+  <!-- mouth (dots for "speaking") -->
+  <circle cx="10.5" cy="15" r="0.6" fill="#111"></circle>
+  <circle cx="12" cy="15" r="0.6" fill="#111"></circle>
+  <circle cx="13.5" cy="15" r="0.6" fill="#111"></circle>
+  <!-- antenna -->
+  <line x1="12" y1="3" x2="12" y2="6" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"></line>
+  <circle cx="12" cy="2" r="1" fill="#ffffff"></circle>
+</svg>

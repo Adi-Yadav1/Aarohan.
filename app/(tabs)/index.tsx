@@ -1,6 +1,6 @@
-import React from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, SafeAreaView } from 'react-native';
 import { router } from 'expo-router';
+import React from 'react';
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 // The ExerciseSelectionScreen component is now the default export of this file.
 // It is what will be rendered on the "Home" tab.
@@ -17,6 +17,17 @@ export default function ExerciseSelectionScreen() {
   return (
     <SafeAreaView style={styles.selectionContainer}>
       <Text style={styles.title}>Choose Your Exercise</Text>
+      
+      {/* Auth Buttons */}
+      <View style={styles.authButtonContainer}>
+        <TouchableOpacity
+          style={styles.loginButton}
+          onPress={() => router.navigate('/loginSign' as any)}
+        >
+          <Text style={styles.loginButtonText}>Login / Sign Up</Text>
+        </TouchableOpacity>
+      </View>
+      
       <View style={styles.buttonGrid}>
         {exercises.map((item) => (
           <TouchableOpacity
@@ -67,5 +78,23 @@ const styles = StyleSheet.create({
     color: '#00E676',
     fontSize: 16,
     fontWeight: '600',
+  },
+  loginButton: {
+    backgroundColor: '#2563eb',
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  loginButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  authButtonContainer: {
+    marginBottom: 20,
+    width: '100%',
+    alignItems: 'center',
   },
 });

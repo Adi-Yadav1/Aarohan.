@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <circle cx="256" cy="256" r="232" fill="#f59e0b" stroke="#7c2d12" stroke-width="12"></circle>
+  <!-- vertical seam -->
+  <path d="M256 24 C220 120 220 392 256 488" fill="none" stroke="#7c2d12" stroke-width="12" stroke-linecap="round"></path>
+  <!-- horizontal seam -->
+  <path d="M24 256 C120 220 392 220 488 256" fill="none" stroke="#7c2d12" stroke-width="12" stroke-linecap="round"></path>
+  <!-- two curved seams -->
+  <path d="M80 80 C160 160 352 96 432 176" fill="none" stroke="#7c2d12" stroke-width="12" stroke-linecap="round"></path>
+  <path d="M80 432 C160 352 352 416 432 336" fill="none" stroke="#7c2d12" stroke-width="12" stroke-linecap="round"></path>
+</svg>

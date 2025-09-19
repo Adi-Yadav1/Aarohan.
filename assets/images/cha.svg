@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="512" height="512" role="img" aria-label="Chatbot icon">
+  <path fill="currentColor" d="M3 11.99C3 6.47 7.48 2 13 2s10 4.47 10 9.99-4.48 9.99-10 9.99c-1.9 0-3.67-.49-5.21-1.34L3 22l1.21-4.05A10.02 10.02 0 013 11.99z"></path>
+  <rect x="7.5" y="7.5" width="9" height="6.5" rx="1.2" ry="1.2" fill="#ffffff"></rect>
+  <rect x="11" y="5.2" width="2" height="1.6" rx="0.4" ry="0.4" fill="#ffffff"></rect>
+  <circle cx="12" cy="5" r="0.9" fill="#ffffff"></circle>
+  <rect x="9.2" y="9.2" width="1.2" height="1.2" rx="0.2" ry="0.2" fill="#111"></rect>
+  <rect x="13.6" y="9.2" width="1.2" height="1.2" rx="0.2" ry="0.2" fill="#111"></rect>
+  <rect x="11" y="11.2" width="2" height="0.8" rx="0.2" ry="0.2" fill="#111"></rect>
+</svg>
