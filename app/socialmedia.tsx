@@ -58,7 +58,7 @@ interface Post {
 const API_URL = "https://sai-backend-3-1tq7.onrender.com/api/social/posts";
 const TOKEN_KEY = "token";
 const LIKE_API = (postId: string) =>
-  `https://sai-backend-3-1tq7.onrender.com/api/social/posts/${postId}/like`;
+  `https://sai-backend-3-1tq7.onrender.com/api/social/posts/${postId}/like`;  
 
 import { router } from "expo-router";
 
