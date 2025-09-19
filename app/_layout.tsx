@@ -52,6 +52,10 @@ export default function RootLayout() {
             <Stack.Screen name="athletesList" options={{ headerShown: false }} />
             <Stack.Screen name="submissionsReceived" options={{ headerShown: false }} />
             <Stack.Screen name="pendingVerification" options={{ headerShown: false }} />
+            <Stack.Screen name="reviewSubmissions" options={{ headerShown: false }} />
+            <Stack.Screen name="manageAthletes" options={{ headerShown: false }} />
+            <Stack.Screen name="testResults" options={{ headerShown: false }} />
+            <Stack.Screen name="generateReports" options={{ headerShown: false }} />
             <Stack.Screen name="createpost" options={{ headerShown: false }} />
             <Stack.Screen name="forgotPass" options={{ headerShown: false }} />
             <Stack.Screen name="kheloIndia" options={{ headerShown: false }} />

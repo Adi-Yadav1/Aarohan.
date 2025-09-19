@@ -107,24 +107,42 @@ const PendingVerification: React.FC = () => {
     const athlete = athletes.find(a => a._id === athleteId);
     if (!athlete) return;
 
-    Alert.prompt(
+    Alert.alert(
       "Reject Verification",
-      `Please provide a reason for rejecting ${athlete.profile.firstName} ${athlete.profile.lastName}'s verification:`,
+      `Select a reason for rejecting ${athlete.profile.firstName} ${athlete.profile.lastName}'s verification:`,
       [
         { text: "Cancel", style: "cancel" },
         { 
-          text: "Reject", 
-          onPress: (reason: string | undefined) => {
-            rejectAthlete(athleteId, reason || 'No reason provided');
+          text: "Incomplete Profile", 
+          onPress: () => {
+            rejectAthlete(athleteId, 'Incomplete profile information provided');
             Alert.alert(
               "Rejected", 
-              `${athlete.profile.firstName} ${athlete.profile.lastName}'s verification has been rejected.`
+              `${athlete.profile.firstName} ${athlete.profile.lastName}'s verification has been rejected due to incomplete profile.`
+            );
+          }
+        },
+        { 
+          text: "Invalid Documents", 
+          onPress: () => {
+            rejectAthlete(athleteId, 'Invalid or missing documents submitted');
+            Alert.alert(
+              "Rejected", 
+              `${athlete.profile.firstName} ${athlete.profile.lastName}'s verification has been rejected due to invalid documents.`
+            );
+          }
+        },
+        { 
+          text: "Does not meet criteria", 
+          onPress: () => {
+            rejectAthlete(athleteId, 'Does not meet verification criteria');
+            Alert.alert(
+              "Rejected", 
+              `${athlete.profile.firstName} ${athlete.profile.lastName}'s verification has been rejected - does not meet criteria.`
             );
           }
         }
-      ],
-      'plain-text',
-      'Incomplete profile information or invalid documents'
+      ]
     );
   };
 

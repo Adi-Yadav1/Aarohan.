@@ -241,21 +241,34 @@ const SubmissionsReceived: React.FC = () => {
   };
 
   const handleReject = (submissionId: string) => {
-    Alert.prompt(
+    // Create a simple multi-option rejection dialog that works on both iOS and Android
+    Alert.alert(
       "Reject Submission",
-      "Please provide a reason for rejection:",
+      "Select a reason for rejection:",
       [
         { text: "Cancel", style: "cancel" },
         { 
-          text: "Reject", 
-          onPress: (reason: string | undefined) => {
-            rejectSubmission(submissionId, reason || 'No reason provided');
-            Alert.alert("Success", "Submission rejected!");
+          text: "Incomplete Documentation", 
+          onPress: () => {
+            rejectSubmission(submissionId, 'Incomplete documentation provided');
+            Alert.alert("Success", "Submission rejected due to incomplete documentation!");
+          }
+        },
+        { 
+          text: "Invalid Data", 
+          onPress: () => {
+            rejectSubmission(submissionId, 'Invalid or incorrect data submitted');
+            Alert.alert("Success", "Submission rejected due to invalid data!");
+          }
+        },
+        { 
+          text: "Does not meet criteria", 
+          onPress: () => {
+            rejectSubmission(submissionId, 'Submission does not meet minimum criteria');
+            Alert.alert("Success", "Submission rejected - does not meet criteria!");
           }
         }
-      ],
-      'plain-text',
-      'Incomplete documentation or invalid data'
+      ]
     );
   };
 

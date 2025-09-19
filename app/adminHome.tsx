@@ -119,7 +119,7 @@ const AdminDashboard: React.FC = () => {
       subtitle: `${metrics.pendingVerifications} pending`,
       icon: '📋',
       color: '#F59E0B',
-      onPress: () => console.log('Review submissions'),
+      onPress: () => router.push('/reviewSubmissions'),
     },
     {
       id: '2',
@@ -127,7 +127,7 @@ const AdminDashboard: React.FC = () => {
       subtitle: `${metrics.totalAthletes} registered`,
       icon: '👥',
       color: '#3B82F6',
-      onPress: () => console.log('Manage athletes'),
+      onPress: () => router.push('/manageAthletes'),
     },
     {
       id: '3',
@@ -135,7 +135,7 @@ const AdminDashboard: React.FC = () => {
       subtitle: `${metrics.completedTests} completed`,
       icon: '📊',
       color: '#10B981',
-      onPress: () => console.log('View test results'),
+      onPress: () => router.push('/testResults'),
     },
     {
       id: '4',
@@ -143,7 +143,7 @@ const AdminDashboard: React.FC = () => {
       subtitle: 'Export data',
       icon: '📈',
       color: '#8B5CF6',
-      onPress: () => console.log('Generate reports'),
+      onPress: () => router.push('/generateReports'),
     },
   ];
 

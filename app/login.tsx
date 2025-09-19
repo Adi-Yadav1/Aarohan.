@@ -2,20 +2,24 @@ import axios from "axios";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
-    Alert,
-    KeyboardAvoidingView,
-    Platform,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  Button,
 } from "react-native";
 
-// AsyncStorage will be enabled after rebuilding the development build
-// import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+// 👉 Change this to your Django backend (use IP if testing on real phone)
+const API_BASE_URL = "http://10.5.8.183:8000/api/auth";
+
 
 const LoginScreen: React.FC = () => {
   const [role, setRole] = useState<"admin" | "athlete">("admin");
@@ -29,57 +33,59 @@ const LoginScreen: React.FC = () => {
     return re.test(email);
   };
 
-  const validatePhone = (phone: string) => {
-    const re = /^[0-9]{10}$/;
-    return re.test(phone);
-  };
-
   const handleLogin = async () => {
     if (!contact || !password) {
-      Alert.alert("Error", "Please enter your email/phone and password.");
+      Alert.alert("Error", "Please enter your email and password.");
       return;
     }
 
-    let emailToSend = contact.trim();
-    // If user entered a phone number, you may need to convert it to email or handle accordingly.
-    // For now, only email login is supported as per your API schema.
-    if (!validateEmail(emailToSend)) {
+    if (!validateEmail(contact.trim())) {
       Alert.alert("Error", "Please enter a valid email address.");
       return;
     }
 
     try {
       setLoading(true);
+
+      // 🔹 Call Django JWT login endpoint
       const response = await axios.post(
-        "https://sai-backend-3-1tq7.onrender.com/api/auth/login",
+        `${API_BASE_URL}/token/`,
         {
-          email: emailToSend,
+          email: contact.trim(),
           password: password,
         },
         { headers: { "Content-Type": "application/json" } }
       );
 
-      if (response.status === 200 && response.data.success) {
-        // TODO: Store token in AsyncStorage after rebuilding app
-        // await AsyncStorage.setItem("token", response.data.data.token);
-        console.log("Login successful, token:", response.data.data.token);
+      if (response.status === 200) {
+        const { access, refresh } = response.data;
 
-        
+        // Save tokens securely
+        await AsyncStorage.setItem("access_token", access);
+        await AsyncStorage.setItem("refresh_token", refresh);
 
-        // Navigate based on role from response
-        const userRole = response.data.data.user.role;
+        console.log("✅ Login successful, token:", access);
+
+        // 🔹 Optionally fetch user role from a protected endpoint
+        const userResponse = await axios.get(`${API_BASE_URL}/me/`, {
+          headers: { Authorization: `Bearer ${access}` },
+        });
+
+        const userRole = userResponse.data.role; // e.g. "ADMIN" or "ATHLETE"
+
         if (userRole === "ADMIN") {
-          router.push("/adminHome"); // Navigate to admin dashboard (can be created later)
+          router.push("/adminHome");
         } else {
-          router.push("/home"); // Navigate to athlete home
+          router.push("/home");
         }
       } else {
-        Alert.alert("Error", response.data.message || "Login failed.");
+        Alert.alert("Error", "Login failed. Please check your credentials.");
       }
     } catch (error: any) {
+      console.error(error);
       Alert.alert(
         "Error",
-        error?.response?.data?.message || "Login failed. Please try again."
+        error?.response?.data?.detail || "Login failed. Please try again."
       );
     } finally {
       setLoading(false);
@@ -87,14 +93,18 @@ const LoginScreen: React.FC = () => {
   };
 
   const handleSignup = () => {
-    
- 
-    router.push('/signup')
+    router.push("/signup");
   };
-  const handleforgot = () =>{
-    // TODO: Create forgot password screen
+  const handleButton = () => {
+    router.push("/home");
+  };
+  const handleButtonAdmin = () => {
+    router.push("/adminHome");
+  };
+
+  const handleForgot = () => {
     Alert.alert("Info", "Forgot password screen will be created soon");
-  }
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -106,31 +116,51 @@ const LoginScreen: React.FC = () => {
           contentContainerStyle={styles.scrollContainer}
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.container}>
            
+          <View style={styles.container}>
             <View style={styles.header}>
               <Text style={styles.welcomeText}>Welcome Back</Text>
               <Text style={styles.subtitle}>Sign in to continue</Text>
             </View>
-
-          
+             <Button
+        title="User Home "
+        onPress={handleButton}
+      />
+             <Button
+        title="Admin HOme"
+        onPress={handleButtonAdmin}
+      />
+        
             <View style={styles.roleSwitch}>
               <TouchableOpacity
                 style={[styles.roleButton, role === "admin" && styles.activeRole]}
                 onPress={() => setRole("admin")}
                 activeOpacity={0.8}
               >
-                <Text style={[styles.roleText, role === "admin" && styles.activeRoleText]}>
+                <Text
+                  style={[
+                    styles.roleText,
+                    role === "admin" && styles.activeRoleText,
+                  ]}
+                >
                   Admin
                 </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={[styles.roleButton, role === "athlete" && styles.activeRole]}
+                style={[
+                  styles.roleButton,
+                  role === "athlete" && styles.activeRole,
+                ]}
                 onPress={() => setRole("athlete")}
                 activeOpacity={0.8}
               >
-                <Text style={[styles.roleText, role === "athlete" && styles.activeRoleText]}>
+                <Text
+                  style={[
+                    styles.roleText,
+                    role === "athlete" && styles.activeRoleText,
+                  ]}
+                >
                   Athlete
                 </Text>
               </TouchableOpacity>
@@ -187,7 +217,10 @@ const LoginScreen: React.FC = () => {
             {/* Footer Links */}
             <View style={styles.footer}>
               {role === "athlete" && (
-                <TouchableOpacity onPress={handleSignup} style={styles.linkButton}>
+                <TouchableOpacity
+                  onPress={handleSignup}
+                  style={styles.linkButton}
+                >
                   <Text style={styles.linkText}>
                     Don't have an account?{" "}
                     <Text style={styles.linkTextBold}>Sign Up</Text>
@@ -195,7 +228,7 @@ const LoginScreen: React.FC = () => {
                 </TouchableOpacity>
               )}
 
-              <TouchableOpacity style={styles.linkButton} onPress={handleforgot}>
+              <TouchableOpacity style={styles.linkButton} onPress={handleForgot}>
                 <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
               </TouchableOpacity>
             </View>
