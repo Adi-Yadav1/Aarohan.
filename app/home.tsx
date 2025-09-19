@@ -1,15 +1,15 @@
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
-  ActivityIndicator,
-  Dimensions,
-  RefreshControl,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View
+    ActivityIndicator,
+    Dimensions,
+    RefreshControl,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
 } from "react-native";
 
 const { width } = Dimensions.get('window');
@@ -133,7 +133,7 @@ const HomeScreen: React.FC = () => {
 
   // Navigation handlers
   const handleStartTest = async () => {
-    router.push('/test');
+    router.push('/types');
   };
 
   const handleViewHistory = () => {
@@ -145,6 +145,7 @@ const HomeScreen: React.FC = () => {
   };
 
   const handleProfile = () => {
+    console.log('Navigating to ProfileSettings...');
     router.push('/ProfileSettings');
   };
 

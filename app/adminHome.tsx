@@ -1,14 +1,15 @@
+import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-    Dimensions,
-    Platform,
-    RefreshControl,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Dimensions,
+  Platform,
+  RefreshControl,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 // Type definitions
@@ -172,8 +173,24 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
-  const renderMetricCard = (title: string, value: number | string, subtitle: string, color: string, trend?: string) => (
-    <View style={[styles.metricCard, { borderLeftColor: color }]}>
+  const handleViewAthletes = () => {
+    router.push('/athletesList');
+  };
+
+  const handleViewSubmissions = () => {
+    router.push('/submissionsReceived');
+  };
+
+  const handleViewPendingVerifications = () => {
+    router.push('/pendingVerification');
+  };
+
+  const renderMetricCard = (title: string, value: number | string, subtitle: string, color: string, trend?: string, onPress?: () => void) => (
+    <TouchableOpacity 
+      style={[styles.metricCard, { borderLeftColor: color }]}
+      onPress={onPress}
+      activeOpacity={onPress ? 0.7 : 1}
+    >
       <View style={styles.metricHeader}>
         <Text style={styles.metricTitle}>{title}</Text>
         {trend && (
@@ -184,7 +201,12 @@ const AdminDashboard: React.FC = () => {
       </View>
       <Text style={styles.metricValue}>{value}</Text>
       <Text style={styles.metricSubtitle}>{subtitle}</Text>
-    </View>
+      {onPress && (
+        <View style={styles.clickIndicator}>
+          <Text style={styles.clickText}>Tap to view →</Text>
+        </View>
+      )}
+    </TouchableOpacity>
   );
 
   return (
@@ -217,21 +239,24 @@ const AdminDashboard: React.FC = () => {
               metrics.totalAthletes.toLocaleString(),
               'Registered users',
               '#3B82F6',
-              '+12%'
+              '+12%',
+              handleViewAthletes
             )}
             {renderMetricCard(
               'Submissions Received',
               metrics.submissionsReceived.toLocaleString(),
               'Test submissions',
               '#10B981',
-              '+8%'
+              '+8%',
+              handleViewSubmissions
             )}
             {renderMetricCard(
               'Pending Verifications',
               metrics.pendingVerifications,
               'Awaiting review',
               '#F59E0B',
-              '-15%'
+              '-15%',
+              handleViewPendingVerifications
             )}
           </View>
         </View>
@@ -599,6 +624,18 @@ const styles = StyleSheet.create({
   statusText: {
     fontSize: 14,
     color: '#374151',
+  },
+  clickIndicator: {
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#F3F4F6',
+  },
+  clickText: {
+    fontSize: 12,
+    color: '#6B7280',
+    textAlign: 'center',
+    fontWeight: '500',
   },
 });
 

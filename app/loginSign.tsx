@@ -11,15 +11,15 @@ import {
 
 const LoginSignScreen: React.FC = () => {
   const handleLogin = () => {
-    router.push("/login" as any);
+    router.push("/login");
   };
 
   const handleSignup = () => {
-    router.push("/signup" as any);
+    router.push("/signup");
   };
 
   const handleGoHome = () => {
-    router.push("/(tabs)" as any);
+    router.push("/home");
   };
 
   return (

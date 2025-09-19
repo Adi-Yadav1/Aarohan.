@@ -231,6 +231,7 @@ const SignupScreen: React.FC = () => {
                 <TextInput
                   style={[styles.input, styles.inputLeft]}
                   placeholder="First Name"
+                  placeholderTextColor="#000000"
                   value={firstName}
                   onChangeText={setFirstName}
                   editable={!loading}
@@ -238,6 +239,7 @@ const SignupScreen: React.FC = () => {
                 <TextInput
                   style={[styles.input, styles.inputRight]}
                   placeholder="Last Name"
+                  placeholderTextColor="#000000"
                   value={lastName}
                   onChangeText={setLastName}
                   editable={!loading}
@@ -245,7 +247,8 @@ const SignupScreen: React.FC = () => {
               </View>
               <TextInput
                 style={styles.input}
-                placeholder="Email"
+                placeholder="Email Address"
+                placeholderTextColor="#000000"
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
@@ -254,7 +257,8 @@ const SignupScreen: React.FC = () => {
               />
               <TextInput
                 style={styles.input}
-                placeholder="Phone"
+                placeholder="Phone Number"
+                placeholderTextColor="#000000"
                 value={phone}
                 onChangeText={setPhone}
                 keyboardType="phone-pad"
@@ -271,10 +275,11 @@ const SignupScreen: React.FC = () => {
                 </Pressable>
                 <TextInput
                   style={[styles.input, styles.inputRight]}
-                  placeholder="Gender (MALE/FEMALE/OTHER)"
+                  placeholder="Gender (Male/Female/Other)"
+                  placeholderTextColor="#000000"
                   value={gender}
                   onChangeText={setGender}
-                  autoCapitalize="characters"
+                  autoCapitalize="words"
                   editable={!loading}
                 />
               </View>
@@ -335,20 +340,23 @@ const SignupScreen: React.FC = () => {
               <TextInput
                 style={styles.input}
                 placeholder="District"
+                placeholderTextColor="#000000"
                 value={district}
                 onChangeText={setDistrict}
                 editable={!loading}
               />
               <TextInput
                 style={styles.input}
-                placeholder="Address"
+                placeholder="Complete Address"
+                placeholderTextColor="#000000"
                 value={address}
                 onChangeText={setAddress}
                 editable={!loading}
               />
               <TextInput
                 style={styles.input}
-                placeholder="Location"
+                placeholder="Training Location/Area"
+                placeholderTextColor="#000000"
                 value={location}
                 onChangeText={setLocation}
                 editable={!loading}
@@ -356,14 +364,16 @@ const SignupScreen: React.FC = () => {
               <View style={styles.row}>
                 <TextInput
                   style={[styles.input, styles.inputLeft]}
-                  placeholder="Sport(s) (comma separated)"
+                  placeholder="Your Sports (e.g. Cricket, Football)"
+                  placeholderTextColor="#000000"
                   value={sport}
                   onChangeText={setSport}
                   editable={!loading}
                 />
                 <TextInput
                   style={[styles.input, styles.inputRight]}
-                  placeholder="Category"
+                  placeholder="Athlete Category"
+                  placeholderTextColor="#000000"
                   value={category}
                   onChangeText={setCategory}
                   editable={!loading}
@@ -373,6 +383,7 @@ const SignupScreen: React.FC = () => {
                 <TextInput
                   style={[styles.input, { flex: 1 }]}
                   placeholder="Password"
+                  placeholderTextColor="#000000"
                   value={password}
                   onChangeText={setPassword}
                   secureTextEntry={!showPassword}
@@ -391,6 +402,7 @@ const SignupScreen: React.FC = () => {
                 <TextInput
                   style={[styles.input, { flex: 1 }]}
                   placeholder="Confirm Password"
+                  placeholderTextColor="#000000"
                   value={confirmPassword}
                   onChangeText={setConfirmPassword}
                   secureTextEntry={!showConfirm}

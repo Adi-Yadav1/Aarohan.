@@ -53,37 +53,56 @@ const ProfileSettings: React.FC = () => {
         if (savedLang) setLanguage(savedLang);
 
         const token = await AsyncStorage.getItem(TOKEN_KEY);
-        if (!token) {
-          router.push("/loginSign");
-          return;
-        }
+        console.log('ProfileSettings - Token check:', token ? 'Token exists' : 'No token found');
+        
+        // Temporarily disable authentication check for testing
+        // if (!token) {
+        //   console.log('ProfileSettings - Redirecting to loginSign due to missing token');
+        //   router.push("/loginSign");
+        //   return;
+        // }
 
-        const response = await axios.get(
-          "https://sai-backend-3-1tq7.onrender.com/api/auth/profile",
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        if (response.data.success) {
-          const user = response.data.data.user;
-          setProfile(user);
-          setEmail(user.email || "");
-          setRole(user.role || "");
-          if (user.profile) {
-            setFirstName(user.profile.firstName || "");
-            setLastName(user.profile.lastName || "");
-            // setDateOfBirth(
-            //   user.athlete.dateOfBirth
-            //     ? user.athlete.dateOfBirth.split("T")[0]
-            //     : ""
-            // );
-            setGender(user.profile.gender || "");
-            // setPhone(user.profile.phone || "");  
-            setState(user.profile.state || "");
-            setDistrict(user.profile.district || "");
-            setSport(user.profile.sport || "");
-            setCategory(user.profile.category || "");
+        // Only make API call if token exists
+        if (token) {
+          const response = await axios.get(
+            "https://sai-backend-3-1tq7.onrender.com/api/auth/profile",
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+          if (response.data.success) {
+            const user = response.data.data.user;
+            setProfile(user);
+            setEmail(user.email || "");
+            setRole(user.role || "");
+            if (user.profile) {
+              setFirstName(user.profile.firstName || "");
+              setLastName(user.profile.lastName || "");
+              // setDateOfBirth(
+              //   user.athlete.dateOfBirth
+              //     ? user.athlete.dateOfBirth.split("T")[0]
+              //     : ""
+              // );
+              setGender(user.profile.gender || "");
+              // setPhone(user.profile.phone || "");  
+              setState(user.profile.state || "");
+              setDistrict(user.profile.district || "");
+              setSport(user.profile.sport || "");
+              setCategory(user.profile.category || "");
+            }
+          } else {
+            Alert.alert("Error", "Failed to load profile.");
           }
         } else {
-          Alert.alert("Error", "Failed to load profile.");
+          // Set demo data when not logged in
+          console.log('Using demo profile data');
+          setEmail("demo@example.com");
+          setRole("athlete");
+          setFirstName("Demo");
+          setLastName("User");
+          setGender("MALE");
+          setState("Demo State");
+          setDistrict("Demo District");
+          setSport("Demo Sport");
+          setCategory("Demo Category");
         }
       } catch (err) {
         Alert.alert("Error", "Failed to load profile.");

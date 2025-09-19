@@ -7,11 +7,11 @@ const CurvedNavbar: React.FC = () => {
   const pathname = usePathname();
 
   const navItems = [
-    { name: 'Home', route: '/Home', icon: '🏠' },
+    { name: 'Home', route: '/home', icon: '🏠' },
     { name: 'Sports', route: '/sports', icon: '⚽' },
-    { name: 'Performance', route: '/performance', icon: '📊' },
+    { name: 'chatbot', route: '/Chatbot', icon: '🤖' },
     { name: 'Social', route: '/socialmedia', icon: '👥' },
-    { name: 'Profile', route: '/ProfileSettings', icon: '👤' },
+    { name: 'Profile', route: '/ProfileSetting', icon: '👤' },
   ];
 
   const handleNavigation = (route: string) => {
@@ -93,3 +93,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 });
+
+
+

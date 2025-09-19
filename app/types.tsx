@@ -18,15 +18,7 @@ export default function ExerciseSelectionScreen() {
     <SafeAreaView style={styles.selectionContainer}>
       <Text style={styles.title}>Choose Your Exercise</Text>
       
-      {/* Auth Buttons */}
-      <View style={styles.authButtonContainer}>
-        <TouchableOpacity
-          style={styles.loginButton}
-          onPress={() => router.navigate('/loginSign' as any)}
-        >
-          <Text style={styles.loginButtonText}>Login / Sign Up</Text>
-        </TouchableOpacity>
-      </View>
+     
       
       <View style={styles.buttonGrid}>
         {exercises.map((item) => (

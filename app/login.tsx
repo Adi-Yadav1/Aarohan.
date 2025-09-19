@@ -64,12 +64,12 @@ const LoginScreen: React.FC = () => {
         // await AsyncStorage.setItem("token", response.data.data.token);
         console.log("Login successful, token:", response.data.data.token);
 
-        Alert.alert("Success", "Login successful!");
+        
 
         // Navigate based on role from response
         const userRole = response.data.data.user.role;
         if (userRole === "ADMIN") {
-          router.push("/(tabs)" as any); // Navigate to admin dashboard (can be created later)
+          router.push("/adminHome"); // Navigate to admin dashboard (can be created later)
         } else {
           router.push("/home"); // Navigate to athlete home
         }
@@ -87,8 +87,9 @@ const LoginScreen: React.FC = () => {
   };
 
   const handleSignup = () => {
-    // TODO: Create signup screen
-    Alert.alert("Info", "Signup screen will be created soon");
+    
+ 
+    router.push('/signup')
   };
   const handleforgot = () =>{
     // TODO: Create forgot password screen
