@@ -1,24 +1,40 @@
-// App.js - Main chatbot component
-import React, { useState, useRef, useEffect } from 'react';
+// Chatbot.tsx - Fitness AI Chatbot component
+import { useRouter } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import React, { useEffect, useRef, useState } from 'react';
 import {
-  View,
+  ActivityIndicator,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  ScrollView,
-  StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
-  ActivityIndicator,
-  Alert,
-  SafeAreaView,
+  View,
 } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
+import { useLanguage } from '../contexts/LanguageContext';
 
-const GEMINI_API_KEY = 'AIzaSyCjVfNyVE1hMgPC1QVy3fJqXeOtvUwSka0'; // Replace with your actual API key
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+const CHATBOT_API_URL = 'https://f2d0c162292a.ngrok-free.app/';
 
-export default function App() {
+/*
+Available API Endpoints:
+- GET  / - API documentation and status
+- POST /chat - Main chat endpoint for frontend
+- POST /ask - Legacy endpoint (redirects to /chat)
+- GET  /health - System health check
+- GET  /stats - System statistics
+- GET  /pipeline/status - Pipeline status
+- POST /pipeline/refresh - Refresh data pipeline
+- GET  /ask/<question> - Primary RAG LLM endpoint (used in this app)
+*/
+
+export default function ChatbotScreen() {
+  const router = useRouter();
+  const { t } = useLanguage();
+  
   type Message = {
     id: number;
     text: string;
@@ -27,10 +43,18 @@ export default function App() {
     isError?: boolean;
   };
 
+  // Function to get welcome message based on language
+  const getWelcomeMessage = () => {
+    if (t.language === 'हिन्दी') {
+      return "नमस्ते! मैं आरोहन का RAG-पावर्ड फिटनेस AI सहायक हूं। मैं व्यायाम, खेल तकनीक, फिटनेस टिप्स, पोषण और स्वास्थ्य के बारे में सवालों का जवाब दे सकता हूं। आप क्या जानना चाहते हैं?";
+    }
+    return "Hello! I'm your RAG-powered fitness AI assistant from Aarohan. I can answer questions about exercises, sports techniques, fitness tips, nutrition, and health using my knowledge base. What would you like to know?";
+  };
+
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
-      text: "Hello! I'm your AI assistant. How can I help you today?",
+      text: getWelcomeMessage(),
       isUser: false,
       timestamp: new Date(),
     },
@@ -39,25 +63,18 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const scrollViewRef = useRef<ScrollView | null>(null);
 
-  // Function to call Gemini API
-  const callGeminiAPI = async (userMessage: string) => {
+  // Function to call Chatbot API using the /ask endpoint
+  const callChatbotAPI = async (userMessage: string) => {
     try {
-      const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
-        method: 'POST',
+      // Encode the question to handle special characters and spaces
+      const encodedQuestion = encodeURIComponent(userMessage);
+      
+      const response = await fetch(`${CHATBOT_API_URL}/ask/${encodedQuestion}`, {
+        method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true', // Skip ngrok browser warning
+          'Accept': 'application/json',
         },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: userMessage,
-                },
-              ],
-            },
-          ],
-        }),
       });
 
       if (!response.ok) {
@@ -66,16 +83,65 @@ export default function App() {
 
       const data = await response.json();
       
-      if (data.candidates && data.candidates[0] && data.candidates[0].content) {
-        return data.candidates[0].content.parts[0].text;
+      // Handle different possible response formats from RAG LLM
+      if (data.response) {
+        return data.response;
+      } else if (data.answer) {
+        return data.answer;
+      } else if (data.message) {
+        return data.message;
+      } else if (typeof data === 'string') {
+        return data;
       } else {
-        throw new Error('Invalid response format from API');
+        throw new Error('Invalid response format from RAG API');
       }
     } catch (error) {
-      console.error('Gemini API Error:', error);
+      console.error('RAG Chatbot API Error:', error);
       throw error;
     }
   };
+
+  // Function to check API health status
+  const checkAPIHealth = async () => {
+    try {
+      const response = await fetch(`${CHATBOT_API_URL}/health`, {
+        method: 'GET',
+        headers: {
+          'ngrok-skip-browser-warning': 'true',
+          'Accept': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        console.log('RAG API is healthy');
+        return true;
+      } else {
+        console.warn('RAG API health check failed');
+        return false;
+      }
+    } catch (error) {
+      console.error('RAG API health check error:', error);
+      return false;
+    }
+  };
+
+  // Check API health on component mount
+  useEffect(() => {
+    checkAPIHealth();
+  }, []);
+
+  // Update welcome message when language changes
+  useEffect(() => {
+    setMessages(prev => [
+      {
+        id: 1,
+        text: getWelcomeMessage(),
+        isUser: false,
+        timestamp: new Date(),
+      },
+      ...prev.slice(1) // Keep all messages except the first welcome message
+    ]);
+  }, [t]);
 
   // Function to send message
   const sendMessage = async () => {
@@ -94,8 +160,8 @@ export default function App() {
     setIsLoading(true);
 
     try {
-      // Call Gemini API
-      const aiResponse = await callGeminiAPI(userMessage.text);
+      // Call Chatbot API
+      const aiResponse = await callChatbotAPI(userMessage.text);
       
       // Add AI response to chat
       const aiMessage = {
@@ -110,14 +176,14 @@ export default function App() {
       // Add error message
       const errorMessage = {
         id: Date.now() + 1,
-        text: "Sorry, I'm having trouble connecting. Please try again later.",
+        text: "Sorry, I'm having trouble connecting to the RAG knowledge base. Please check your connection and try again.",
         isUser: false,
         timestamp: new Date(),
         isError: true,
       };
       
       setMessages(prev => [...prev, errorMessage]);
-      Alert.alert('Error', 'Failed to get response from AI. Please check your API key and internet connection.');
+      Alert.alert('Connection Error', 'Failed to get response from RAG API. Please check your internet connection.');
     } finally {
       setIsLoading(false);
     }
@@ -142,8 +208,19 @@ export default function App() {
       
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>AI Chatbot</Text>
-        <Text style={styles.headerSubtitle}>Powered by Gemini</Text>
+        <TouchableOpacity 
+          style={styles.backButton} 
+          onPress={() => router.back()}
+        >
+          <Text style={styles.backButtonText}>←</Text>
+        </TouchableOpacity>
+        <View style={styles.headerContent}>
+          <Text style={styles.headerTitle}>{t.fitnessAssistant}</Text>
+          <Text style={styles.headerSubtitle}>{t.askAnything}</Text>
+        </View>
+        <View style={styles.headerRight}>
+          <Text style={styles.statusIndicator}>●</Text>
+        </View>
       </View>
 
       {/* Chat Messages */}
@@ -185,7 +262,7 @@ export default function App() {
         {isLoading && (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="small" color="#007AFF" />
-            <Text style={styles.loadingText}>AI is thinking...</Text>
+            <Text style={styles.loadingText}>{t.aiThinking}</Text>
           </View>
         )}
       </ScrollView>
@@ -200,7 +277,7 @@ export default function App() {
             style={styles.textInput}
             value={inputText}
             onChangeText={setInputText}
-            placeholder="Type your message..."
+            placeholder={t.typeMessage}
             placeholderTextColor="#999"
             multiline
             maxLength={1000}
@@ -214,7 +291,7 @@ export default function App() {
             onPress={sendMessage}
             disabled={!inputText.trim() || isLoading}
           >
-            <Text style={styles.sendButtonText}>Send</Text>
+            <Text style={styles.sendButtonText}>{t.send}</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
@@ -231,6 +308,25 @@ const styles = StyleSheet.create({
     backgroundColor: '#007AFF',
     paddingVertical: 16,
     paddingHorizontal: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  backButton: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  backButtonText: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  headerContent: {
+    flex: 1,
     alignItems: 'center',
   },
   headerTitle: {
@@ -242,6 +338,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'rgba(255,255,255,0.8)',
     marginTop: 2,
+  },
+  headerRight: {
+    width: 40,
+    alignItems: 'center',
+  },
+  statusIndicator: {
+    color: '#00ff88',
+    fontSize: 20,
   },
   chatContainer: {
     flex: 1,

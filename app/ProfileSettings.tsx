@@ -4,33 +4,31 @@ import axios from "axios";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
-  Alert,
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    Alert,
+    KeyboardAvoidingView,
+    Modal,
+    Platform,
+    SafeAreaView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
+import { useLanguage } from "../contexts/LanguageContext";
 
-const LANG_KEY = "appLanguage_v1";
 const TOKEN_KEY = "token";
 
 const AVAILABLE_LANGUAGES = [
   { code: "en", label: "English" },
   { code: "hi", label: "हिन्दी" },
-  { code: "mr", label: "मराठी" },
-  { code: "bn", label: "বাংলা" },
 ];
 
 const ProfileSettings: React.FC = () => {
+  const { language, setLanguage, t } = useLanguage();
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [language, setLanguage] = useState<string>("en");
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   // Profile fields
@@ -49,9 +47,6 @@ const ProfileSettings: React.FC = () => {
   useEffect(() => {
     (async () => {
       try {
-        const savedLang = await AsyncStorage.getItem(LANG_KEY);
-        if (savedLang) setLanguage(savedLang);
-
         const token = await AsyncStorage.getItem(TOKEN_KEY);
         console.log('ProfileSettings - Token check:', token ? 'Token exists' : 'No token found');
         
@@ -115,7 +110,7 @@ const ProfileSettings: React.FC = () => {
   const onSave = async () => {
     // Profile update not implemented (API does not support it in your schema)
     Alert.alert("Info", "Profile update is not implemented in this demo.");
-    await AsyncStorage.setItem(LANG_KEY, language);
+    // Language is automatically saved by LanguageContext
   };
 
   const onLogout = async () => {
@@ -127,7 +122,6 @@ const ProfileSettings: React.FC = () => {
         onPress: async () => {
           try {
             await AsyncStorage.removeItem(TOKEN_KEY);
-            await AsyncStorage.removeItem(LANG_KEY);
             router.push("/loginSign");
           } catch (err) {
             router.push("/loginSign");
@@ -139,7 +133,7 @@ const ProfileSettings: React.FC = () => {
 
   const openLanguageModal = () => setModalVisible(true);
   const pickLanguage = (code: string) => {
-    setLanguage(code);
+    setLanguage(code as 'en' | 'hi');
     setModalVisible(false);
   };
 
@@ -189,7 +183,7 @@ const ProfileSettings: React.FC = () => {
                 />
               </View>
               <View style={styles.inputContainer}>
-                <Text style={styles.inputLabel}>First Name</Text>
+                <Text style={styles.inputLabel}>{t.firstName}</Text>
                 <TextInput
                   style={styles.input}
                   value={firstName}
@@ -197,7 +191,7 @@ const ProfileSettings: React.FC = () => {
                 />
               </View>
               <View style={styles.inputContainer}>
-                <Text style={styles.inputLabel}>Last Name</Text>
+                <Text style={styles.inputLabel}>{t.lastName}</Text>
                 <TextInput
                   style={styles.input}
                   value={lastName}
@@ -262,7 +256,7 @@ const ProfileSettings: React.FC = () => {
               </View>
 
               <View style={styles.inputContainer}>
-                <Text style={styles.inputLabel}>App Language</Text>
+                <Text style={styles.inputLabel}>{t.language}</Text>
                 <TouchableOpacity style={styles.selectInput} onPress={openLanguageModal}>
                   <Text style={styles.selectText}>
                     {

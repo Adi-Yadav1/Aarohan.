@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { View, StyleSheet, Text, Dimensions, Platform } from 'react-native';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { Camera, useCameraPermission, useCameraDevice } from 'react-native-vision-camera';
 import { RNMediapipe } from '@thinksys/react-native-mediapipe';
 import { useLocalSearchParams } from 'expo-router';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Dimensions, Modal, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { useCameraDevice, useCameraPermission } from 'react-native-vision-camera';
+import ExerciseTips from '../components/ExerciseTips';
 
 const { width, height } = Dimensions.get('window');
 
@@ -21,6 +22,18 @@ export default function PoseDetectionScreen() {
     peakHeight: null,
     startHeight: null,
   });
+
+  const [showTips, setShowTips] = useState(true);
+  const [workoutStarted, setWorkoutStarted] = useState(false);
+
+  const startWorkout = () => {
+    setShowTips(false);
+    setWorkoutStarted(true);
+  };
+
+  const viewTips = () => {
+    setShowTips(true);
+  };
 
   useEffect(() => {
     if (!hasPermission) {
@@ -90,7 +103,56 @@ export default function PoseDetectionScreen() {
               </>
             )}
           </View>
+          
+          {/* Tips Button */}
+          <View style={styles.tipsButtonContainer}>
+            <TouchableOpacity 
+              style={styles.tipsButton}
+              onPress={viewTips}
+            >
+              <Text style={styles.tipsButtonText}>💡 View Tips</Text>
+            </TouchableOpacity>
+          </View>
         </View>
+
+        {/* Exercise Tips Modal */}
+        <Modal
+          visible={showTips}
+          animationType="slide"
+          presentationStyle="pageSheet"
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalHeader}>
+              <TouchableOpacity 
+                style={styles.closeButton}
+                onPress={() => setShowTips(false)}
+              >
+                <Text style={styles.closeButtonText}>✕</Text>
+              </TouchableOpacity>
+              <Text style={styles.modalTitle}>Exercise Instructions</Text>
+            </View>
+            
+            <ExerciseTips exerciseType={exercise} />
+            
+            <View style={styles.modalFooter}>
+              {!workoutStarted ? (
+                <TouchableOpacity 
+                  style={styles.startButton}
+                  onPress={startWorkout}
+                >
+                  <Text style={styles.startButtonText}>🏃 Start Workout</Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity 
+                  style={styles.continueButton}
+                  onPress={() => setShowTips(false)}
+                >
+                  <Text style={styles.continueButtonText}>Continue Workout</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        </Modal>
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -642,5 +704,82 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     padding: 20,
+  },
+  tipsButtonContainer: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+  },
+  tipsButton: {
+    backgroundColor: '#fbbf24',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+  },
+  tipsButtonText: {
+    color: '#000',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: '#1a1a1a',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 20,
+    paddingTop: 50,
+    backgroundColor: 'rgba(0,0,0,0.9)',
+  },
+  closeButton: {
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  modalTitle: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+    flex: 1,
+    textAlign: 'center',
+    marginRight: 36,
+  },
+  modalFooter: {
+    padding: 20,
+    backgroundColor: 'rgba(0,0,0,0.9)',
+  },
+  startButton: {
+    backgroundColor: '#22c55e',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+    alignItems: 'center',
+  },
+  startButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  continueButton: {
+    backgroundColor: '#22c55e',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 25,
+    alignItems: 'center',
+  },
+  continueButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });

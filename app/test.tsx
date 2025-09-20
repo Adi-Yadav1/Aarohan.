@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
   Dimensions,
   SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 // Type definitions
@@ -31,48 +31,57 @@ const TestSelection: React.FC<TestSelectionProps> = ({ onTestSelect }) => {
   const [selectedTests, setSelectedTests] = useState<string[]>([]);
   const router = useRouter();
 
-  // Test data
+  // Test data with AI-powered exercises
   const tests: Test[] = [
     {
       id: '1',
-      name: 'Height Measurement',
-      description: 'Measure your standing height',
-      icon: '📏',
-      category: 'measurement',
-      estimatedTime: '2 min',
+      name: 'Squats',
+      description: 'AI-powered squat rep counting with form analysis',
+      icon: '🏋️‍♂️',
+      category: 'strength',
+      estimatedTime: '5 min',
     },
     {
       id: '2',
-      name: 'Vertical Jump',
-      description: 'Test your explosive leg power',
-      icon: '🦘',
+      name: 'Push-ups',
+      description: 'Automated push-up counter with pose detection',
+      icon: '💪',
       category: 'strength',
       estimatedTime: '5 min',
     },
     {
       id: '3',
-      name: 'Sit-ups',
-      description: 'Measure your core strength endurance',
-      icon: '💪',
-      category: 'strength',
-      estimatedTime: '3 min',
+      name: 'Running',
+      description: 'Track steps, distance, and time with phone sensors',
+      icon: '🏃‍♂️',
+      category: 'endurance',
+      estimatedTime: '15 min',
     },
     {
       id: '4',
-      name: 'Shuttle Run',
-      description: 'Test your agility and speed',
-      icon: '🏃‍♂️',
+      name: 'Flexibility',
+      description: 'Touch toe test with flexibility rating',
+      icon: '�‍♀️',
       category: 'agility',
-      estimatedTime: '10 min',
+      estimatedTime: '3 min',
     },
     {
       id: '5',
-      name: 'Endurance Run',
-      description: 'Assess your cardiovascular fitness',
+      name: 'Sit-ups',
+      description: 'Core strength with automated rep counting',
       icon: '🏃‍♀️',
-      category: 'endurance',
-      estimatedTime: '20 min',
+      category: 'strength',
+      estimatedTime: '5 min',
     },
+    {
+      id: '6',
+      name: 'Vertical Jump',
+      description: 'Measure jump height with AI motion tracking',
+      icon: '🦘',
+      category: 'agility',
+      estimatedTime: '3 min',
+    },
+
   ];
 
   const getCategoryColor = (category: Test['category']) => {
@@ -89,9 +98,33 @@ const TestSelection: React.FC<TestSelectionProps> = ({ onTestSelect }) => {
         return '#6B7280';
     }
   };
-  const handletest= () =>{
-    router.push('/camera')
-  }
+  
+  const handletest = () => {
+    if (selectedTests.length > 0) {
+      const selectedTest = tests.find(test => selectedTests[0] === test.id);
+      const exerciseType = getExerciseType(selectedTest?.name || '');
+      router.push({
+        pathname: '/camera',
+        params: {
+          exerciseType: exerciseType,
+          testName: selectedTest?.name || 'Exercise',
+          testId: selectedTest?.id || '1'
+        }
+      });
+    }
+  };
+
+  const getExerciseType = (testName: string): string => {
+    switch (testName.toLowerCase()) {
+      case 'squats': return 'squats';
+      case 'push-ups': return 'pushups';
+      case 'running': return 'running';
+      case 'flexibility': return 'flexibility';
+      case 'sit-ups': return 'situps';
+      case 'vertical jump': return 'vertical_jump';
+      default: return 'squats';
+    }
+  };
   const handleTestPress = (test: Test) => {
     const isSelected = selectedTests.includes(test.id);
     

@@ -8,8 +8,8 @@ export default function ExerciseSelectionScreen() {
   const exercises = [
     { name: 'Squats', url: 'squats' },
     { name: 'Push-ups', url: 'pushups' },
-    { name: 'Pull-ups', url: 'pullups' },
-    { name: 'Lunges', url: 'lunges' },
+    { name: 'Running', url: 'running' },
+    { name: 'Flexibility', url: 'flexibility' },
     { name: 'Sit-ups', url: 'situps' },
     { name: 'Vertical Jump Height', url: 'vertical_jump' },
   ];
@@ -25,7 +25,7 @@ export default function ExerciseSelectionScreen() {
           <TouchableOpacity
             key={item.url}
             style={styles.exerciseButton}
-            onPress={() => router.push({ pathname: '/poseDetector', params: { exercise: item.url } })}
+            onPress={() => router.push({ pathname: '/camera', params: { exerciseType: item.url } })}
           >
             <Text style={styles.buttonText}>{item.name}</Text>
           </TouchableOpacity>

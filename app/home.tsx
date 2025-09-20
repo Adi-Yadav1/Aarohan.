@@ -11,6 +11,7 @@ import {
     TouchableOpacity,
     View
 } from "react-native";
+import { useLanguage } from '../contexts/LanguageContext';
 
 const { width } = Dimensions.get('window');
 
@@ -71,6 +72,8 @@ const mockData: DashboardData = {
 };
 
 const HomeScreen: React.FC = () => {
+  const { t } = useLanguage();
+  
   // State management
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -111,9 +114,9 @@ const HomeScreen: React.FC = () => {
   // Helper functions
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return "Good Morning";
-    if (hour < 17) return "Good Afternoon";
-    return "Good Evening";
+    if (hour < 12) return t.goodMorning;
+    if (hour < 17) return t.goodAfternoon;
+    return t.goodEvening;
   };
 
   const formatLastTestDate = (dateString: string) => {
@@ -216,8 +219,8 @@ const HomeScreen: React.FC = () => {
               <Text style={styles.startTestEmoji}>🏃‍♂️</Text>
             </View>
             <View style={styles.startTestContent}>
-              <Text style={styles.startTestTitle}>Start Fitness Test</Text>
-              <Text style={styles.startTestSubtitle}>Ready to challenge yourself?</Text>
+              <Text style={styles.startTestTitle}>{t.startFitnessTest}</Text>
+              <Text style={styles.startTestSubtitle}>{t.readyToChallenge}</Text>
             </View>
             <Text style={styles.startTestArrow}>→</Text>
           </TouchableOpacity>
@@ -233,11 +236,11 @@ const HomeScreen: React.FC = () => {
               <View style={styles.cardIcon}>
                 <Text style={styles.cardEmoji}>📊</Text>
               </View>
-              <Text style={styles.cardTitle}>Performance History</Text>
-              <Text style={styles.cardSubtitle}>Track your progress</Text>
+              <Text style={styles.cardTitle}>{t.performanceHistory}</Text>
+              <Text style={styles.cardSubtitle}>{t.view} {t.progressPercent}</Text>
               <View style={styles.cardBadge}>
                 <Text style={styles.cardBadgeText}>
-                  Last: {formatLastTestDate(dashboardData?.stats.lastTestDate || "Never")}
+                  {t.lastTest}: {formatLastTestDate(dashboardData?.stats.lastTestDate || "Never")}
                 </Text>
               </View>
             </TouchableOpacity>
@@ -250,7 +253,7 @@ const HomeScreen: React.FC = () => {
               <Text style={styles.cardTitle}>Leaderboards</Text>
               <Text style={styles.cardSubtitle}>See top performers</Text>
               <View style={styles.cardBadge}>
-                <Text style={styles.cardBadgeText}>Rank #{dashboardData?.stats.currentRank || 0}</Text>
+                <Text style={styles.cardBadgeText}>{t.rank} #{dashboardData?.stats.currentRank || 0}</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -261,7 +264,7 @@ const HomeScreen: React.FC = () => {
               <View style={styles.cardIcon}>
                 <Text style={styles.cardEmoji}>🎖️</Text>
               </View>
-              <Text style={styles.cardTitle}>Badges</Text>
+              <Text style={styles.cardTitle}>{t.badges}</Text>
               <Text style={styles.cardSubtitle}>Your achievements</Text>
               <View style={styles.cardBadge}>
                 <Text style={styles.cardBadgeText}>{dashboardData?.stats.totalBadges || 0} earned</Text>
@@ -273,8 +276,8 @@ const HomeScreen: React.FC = () => {
               <View style={styles.cardIcon}>
                 <Text style={styles.cardEmoji}>⚙️</Text>
               </View>
-              <Text style={styles.cardTitle}>Profile</Text>
-              <Text style={styles.cardSubtitle}>Settings & info</Text>
+              <Text style={styles.cardTitle}>{t.profile}</Text>
+              <Text style={styles.cardSubtitle}>{t.settings} & info</Text>
               <View style={styles.cardBadge}>
                 <Text style={styles.cardBadgeText}>Manage</Text>
               </View>
@@ -285,7 +288,7 @@ const HomeScreen: React.FC = () => {
         {/* Recent Activity */}
         {dashboardData?.recentActivities && dashboardData.recentActivities.length > 0 && (
           <View style={styles.recentActivity}>
-            <Text style={styles.sectionTitle}>Recent Activity</Text>
+            <Text style={styles.sectionTitle}>{t.recentActivity}</Text>
             {dashboardData.recentActivities.map((activity) => (
               <View key={activity.id} style={styles.activityCard}>
                 <Text style={styles.activityEmoji}>{activity.emoji}</Text>

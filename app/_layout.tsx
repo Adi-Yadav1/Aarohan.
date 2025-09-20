@@ -11,6 +11,7 @@ import { useSegments } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import CurvedNavbar from '../components/CurverdNavbar';
 import { AthleteProvider } from '../contexts/AthleteContext';
+import { LanguageProvider } from '../contexts/LanguageContext';
 import SplashScreen from './splashScreen';
 
 export default function RootLayout() {
@@ -39,10 +40,11 @@ export default function RootLayout() {
   }
 
   return (
-    <AthleteProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <View style={styles.container}>
-          <Stack initialRouteName="loginSign">
+    <LanguageProvider>
+      <AthleteProvider>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+            <View style={styles.container}>
+            <Stack initialRouteName="loginSign">
             <Stack.Screen name="loginSign" options={{ headerShown: false }} />
             <Stack.Screen name="signup" options={{ headerShown: false }} />
             <Stack.Screen name="Home" options={{ headerShown: false }} />
@@ -75,12 +77,13 @@ export default function RootLayout() {
             <Stack.Screen name="types" options={{ headerShown: false }} />
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="+not-found" />
-          </Stack>
-          {showNavbar && <CurvedNavbar />}
-        </View>
-        <StatusBar style="auto" />
-      </ThemeProvider>
-    </AthleteProvider>
+            </Stack>
+            {showNavbar && <CurvedNavbar />}
+          </View>
+          <StatusBar style="auto" />
+        </ThemeProvider>
+      </AthleteProvider>
+    </LanguageProvider>
   );
 }
 const styles = StyleSheet.create({

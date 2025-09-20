@@ -1,17 +1,19 @@
 import { usePathname, useRouter } from 'expo-router';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const CurvedNavbar: React.FC = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const { t } = useLanguage();
 
   const navItems = [
-    { name: 'Home', route: '/home', icon: '🏠' },
-    { name: 'Sports', route: '/sports', icon: '⚽' },
-    { name: 'chatbot', route: '/Chatbot', icon: '🤖' },
-    { name: 'Social', route: '/socialmedia', icon: '👥' },
-    { name: 'Profile', route: '/ProfileSetting', icon: '👤' },
+    { name: t.home, route: '/home', icon: '🏠' },
+    { name: t.sports, route: '/sports', icon: '⚽' },
+    { name: t.chatbot, route: '/chatbot', icon: '🤖' },
+    { name: t.social, route: '/socialmedia', icon: '👥' },
+    { name: t.profile, route: '/ProfileSetting', icon: '👤' },
   ];
 
   const handleNavigation = (route: string) => {
